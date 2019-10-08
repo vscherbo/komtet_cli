@@ -4,9 +4,14 @@
 """
 
 from configparser import ConfigParser
+import fire
 from requests.exceptions import HTTPError
-from komtet_kassa_sdk import Client
-
+#from komtet_kassa_sdk import Client
+#import komtet_kassa_sdk
+from komtet_kassa_sdk import (
+    Check, CorrectionCheck, Client, Intent, TaxSystem, VatRate, CorrectionType, PaymentMethod,
+    Agent, AgentType, CalculationSubject, CalculationMethod
+)
 
 def main(shop_id, secret_key):
     """
@@ -16,11 +21,11 @@ def main(shop_id, secret_key):
 
     # Отправка запроса
     try:
-        task = client.get_couriers()
+        cour_list = client.get_couriers()
     except HTTPError as exc:
         print(exc.response.text)
     else:
-        print(task)
+        print(cour_list)
 
 
 if __name__ == '__main__':
@@ -29,4 +34,5 @@ if __name__ == '__main__':
     SHOP_ID = CFG['AUTH']['SHOP_ID']
     SECRET_KEY = CFG['AUTH']['SECRET_KEY']
     print(SHOP_ID)
-    main(SHOP_ID, SECRET_KEY)
+    # main(SHOP_ID, SECRET_KEY)
+    fire.Fire(Client(SHOP_ID, SECRET_KEY))
