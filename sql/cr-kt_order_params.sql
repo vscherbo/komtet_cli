@@ -25,14 +25,14 @@ BEGIN
 SELECT 
 arg_bill_no,
 e."ФИО",
-'СПБ, Адрес',
+e."Примечание", -- 'СПБ, Адрес',
 e."Телефон",
 e."ЕАдрес",
 b.Сумма = b.Сумма1 AS is_paid,
 q.description,
 q.status,
-now(),
-now() + '1 day'::INTERVAL,
+to_char(now(), 'YYYY-MM-DD HH:MI'),
+to_char(now()+'1 day', 'YYYY-MM-DD HH:MI'),
 1, -- СНО доход
 q.courier_id,
 NULL, -- prepayment
