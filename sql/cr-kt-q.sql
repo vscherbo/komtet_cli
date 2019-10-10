@@ -8,7 +8,7 @@ CREATE TABLE shp.kt_q (
 	dt_start timestamp NULL,
 	dt_end timestamp NULL,
 	payment_type varchar NULL DEFAULT 'card'::character varying, -- card - оплата безналичными (по умолчанию), cash - оплата наличными, prepayment - сумма предоплатой (зачет аванса и/или предыдущих платежей), credit - сумма постоплатой (кредит), counter_provisioning - сумма встречным предоставлением
-	id_courier int4 NOT NULL,
+	courier_id int4 NOT NULL,
 	description varchar NULL,
     delivery_cost numeric NULL DEFAULT 500,
 	id_komtet int4 NULL
