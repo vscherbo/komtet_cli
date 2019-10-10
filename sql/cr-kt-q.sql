@@ -10,7 +10,7 @@ CREATE TABLE shp.kt_q (
 	payment_type varchar NULL DEFAULT 'card'::character varying, -- card - оплата безналичными (по умолчанию), cash - оплата наличными, prepayment - сумма предоплатой (зачет аванса и/или предыдущих платежей), credit - сумма постоплатой (кредит), counter_provisioning - сумма встречным предоставлением
 	id_courier int4 NOT NULL,
 	description varchar NULL,
-    delivery_cost numeric NOT NULL DEFAULT 500,
+    delivery_cost numeric NULL DEFAULT 500,
 	id_komtet int4 NULL
 );
 COMMENT ON TABLE shp.kt_q IS 'очередь доставок курьером для КОМТЕТ';
