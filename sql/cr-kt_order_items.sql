@@ -41,7 +41,7 @@ WHERE bc."№ счета" = arg_bill_no)
 SELECT i.* FROM items i
 UNION
 (SELECT (m.oid::int4+1)::varchar, 'Доставка', q.delivery_cost, 1, m.vat, 'шт', 'service' FROM max_item m
-JOIN kt_q q ON q.bill_no = 38235502 AND q.delivery_cost IS NOT NULL)
+JOIN kt_q q ON q.bill_no = arg_bill_no AND q.delivery_cost IS NOT NULL)
 ORDER BY oid;
 
 $function$
