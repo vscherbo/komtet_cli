@@ -24,17 +24,25 @@ AS $function$
  measure_name
 **/
 
+WITH items AS (
 SELECT
 bc."ПозицияСчета"::varchar as oid
 , bc."Наименование" as name
 , bc."ЦенаНДС"::float as price
 , bc."Кол-во"::float as quantity
-, k.kt_vat as vat                                                                    
+, k.kt_vat as vat
 , bc."Ед Изм" as measure_name
 , k.kt_type AS type
-FROM "Содержание счета" bc  
+FROM "Содержание счета" bc
 LEFT JOIN cash.komtet_catalog k ON k.kt_code = bc."КодСодержания"
-WHERE bc."№ счета" = arg_bill_no
-ORDER BY bc."ПозицияСчета";
+WHERE bc."№ счета" = arg_bill_no)
+-- ORDER BY bc."ПозицияСчета")
+, max_item AS (SELECT * FROM items ORDER BY oid DESC LIMIT 1)
+SELECT i.* FROM items i
+UNION
+(SELECT (m.oid::int4+1)::varchar, 'Доставка', q.delivery_cost, 1, m.vat, 'шт', 'service' FROM max_item m
+JOIN kt_q q ON q.bill_no = 38235502 AND q.delivery_cost IS NOT NULL)
+ORDER BY oid;
+
 $function$
 ;
