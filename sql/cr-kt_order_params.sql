@@ -39,7 +39,10 @@ NULL, -- prepayment
 q.payment_type
 INTO res
 FROM "Счета" b
-JOIN shp.kt_q q ON b."№ счета" = q.bill_no AND b."ОтгрузкаКем" = 'Курьером по СПб' AND b."ОтгрузкаОплата" = 'Они'
+JOIN shp.kt_q q ON b."№ счета" = q.bill_no 
+-- AND b."ОтгрузкаКем" = 'Курьером по СПб'
+AND b."ОтгрузкаКем" ILIKE 'Курьер%СПб%' 
+AND b."ОтгрузкаОплата" = 'Они'
 JOIN "Работники" e ON e."КодРаботника" = b."КодРаботника" -- AND b."Код" = 223719
 WHERE b."№ счета" = arg_bill_no;
 RETURN res;
