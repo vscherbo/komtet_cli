@@ -1,4 +1,7 @@
-CREATE OR REPLACE FUNCTION shp.kt_order_params(arg_bill_no integer)
+-- DROP FUNCTION shp.kt_order_params(arg_shp_id integer);
+
+
+CREATE OR REPLACE FUNCTION shp.kt_order_params(arg_shp_id integer)
  RETURNS kt_order
  LANGUAGE plpgsql
 AS $function$
@@ -6,7 +9,7 @@ DECLARE
     res kt_order;
 BEGIN 
     /**
-    res.external_id := arg_bill_no;
+    res.external_id := arg_shp_id;
     res.client_name :=  ;
    *res.client_address :=  ;
    *res.client_phone :=  ;
@@ -22,31 +25,25 @@ BEGIN
     res.payment_type :=  ;
 **/
 SELECT
-arg_bill_no,
-e."ФИО",
--- e."Примечание", -- 'СПБ, Адрес',
-COALESCE(CASE length(e."Примечание") < 10 WHEN 't' THEN NULL ELSE e."Примечание" END, a.fvalue),
-COALESCE(NULLIF(digits_only(e."Телефон"), ''), ph.fvalue),
-e."ЕАдрес",
-b.Сумма = b.Сумма1 AS is_paid,
+arg_shp_id,
+q.cli_name,
+q.cli_address,
+q.cli_phone,
+q.cli_email,
+q.is_paid,
 q.description,
 q.status,
-to_char(now(), 'YYYY-MM-DD HH:MI'),
-to_char(now()+'1 day', 'YYYY-MM-DD HH:MI'),
-1, -- СНО доход
+-- q.dt_start,
+-- q.dt_end,
+to_char(q.dt_start, 'YYYY-MM-DD HH24:MI') as date_start,                   
+to_char(q.dt_end, 'YYYY-MM-DD HH24:MI') as date_end,                       
+q.sno, -- 1 УСН доход
 q.courier_id,
-NULL, -- prepayment
+q.prepayment,
 q.payment_type
 INTO res
-FROM "Счета" b
-JOIN shp.kt_q q ON b."№ счета" = q.bill_no 
--- AND b."ОтгрузкаКем" = 'Курьером по СПб'
-AND b."ОтгрузкаКем" ILIKE 'Курьер%СПб%' 
-AND b."ОтгрузкаОплата" = 'Они'
-JOIN "Работники" e ON e."КодРаботника" = b."КодРаботника" -- AND b."Код" = 223719
-JOIN bx_order_feature ph ON b."ИнтернетЗаказ" = ph."bx_order_Номер" AND ph.fname = 'Контактный телефон'
-JOIN bx_order_feature a ON b."ИнтернетЗаказ" = a."bx_order_Номер" AND a.fname = 'Адрес доставки'
-WHERE b."№ счета" = arg_bill_no;
+FROM shp.kt_q q
+WHERE q.shp_id = arg_shp_id;
 
 RETURN res;
 END

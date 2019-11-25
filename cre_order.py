@@ -9,7 +9,7 @@ from requests.exceptions import HTTPError
 from komtet_kassa_sdk import Order, Client
 import kt_app
 
-UPD_SQL_TEMPL = 'UPDATE shp.kt_q SET id_komtet=%s WHERE bill_no=%s'
+UPD_SQL_TEMPL = 'UPDATE shp.kt_q SET id_komtet=%s WHERE shp_id=%s'
 
 class KTorder(kt_app.KTapp):
     """ KOMTET order application
@@ -19,7 +19,7 @@ class KTorder(kt_app.KTapp):
         super(KTorder, self).__init__(args)
         self.client = Client(self.shop_id, self.secret_key)
 
-    def prepare_order(self, bill_no):
+    def prepare_order(self, shp_id):
         """ Set order params from PG
         """
         get_order_params = """SELECT
@@ -35,9 +35,9 @@ class KTorder(kt_app.KTapp):
         date_end,
         sno,
         courier_id,
-        prepayment,
+        prepayment::float,
         payment_type
-        FROM shp.kt_order_params({});""".format(bill_no)
+        FROM shp.kt_order_params({});""".format(shp_id)
 
         # actions
         while True:
@@ -53,11 +53,12 @@ class KTorder(kt_app.KTapp):
         logging.info('data=%s', data)
         logging.info('client_name=%s', data['client_name'])
 
-        self.order = Order(order_id=str(bill_no),
+        self.order = Order(order_id=str(shp_id),
                            state='new',
                            sno=data['sno'],
                            is_paid=data['is_paid'],
-                           payment_type=data['payment_type']
+                           payment_type=data['payment_type'],
+                           prepayment=data['prepayment']
                           )
         self.order.set_client(address=data['client_address'],
                               phone=data['client_phone'],
@@ -71,13 +72,13 @@ class KTorder(kt_app.KTapp):
             self.order.set_description(data['description'])
         self.order.add_courier_id(int(data['courier_id']))
 
-        self.set_order_items(bill_no)
+        self.set_order_items(shp_id)
         logging.debug('End of function')
 
-    def set_order_items(self, bill_no):
+    def set_order_items(self, shp_id):
         """ Get order items from PG
         """
-        get_order_items = "SELECT * FROM shp.kt_order_items({});".format(bill_no)
+        get_order_items = "SELECT * FROM shp.kt_order_items({});".format(shp_id)
         while True:
             res = self.run_query(get_order_items, dict_mode=True)
             if res == 0:
@@ -146,8 +147,8 @@ def main():
     """
     Just main
     """
-    kt_app.parser.add_argument('--bill_no', type=int, required=True,
-                               help='Номер счёта')
+    kt_app.parser.add_argument('--shp_id', type=int, required=True,
+                               help='Ид отправки')
     # 55236708
                                # help='id доставки через ПР')
     args = kt_app.parser.parse_args()
@@ -158,7 +159,7 @@ def main():
     kt_order_app.wait_pg_connect()
     kt_order_app.set_session(autocommit=True)
 
-    kt_order_app.prepare_order(args.bill_no)
+    kt_order_app.prepare_order(args.shp_id)
 
     kt_order_app.place_order()
 

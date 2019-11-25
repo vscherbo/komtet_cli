@@ -1,6 +1,6 @@
 DROP FUNCTION shp.kt_order_items(integer);
 
-CREATE OR REPLACE FUNCTION shp.kt_order_items(arg_bill_no integer,
+CREATE OR REPLACE FUNCTION shp.kt_order_items(arg_shp_id integer,
     /**/
     OUT oid varchar,
     OUT name varchar,
@@ -33,15 +33,15 @@ bc."ПозицияСчета"::varchar as oid
 , k.kt_vat as vat
 , bc."Ед Изм" as measure_name
 , k.kt_type AS type
-FROM "Содержание счета" bc
+FROM shp.ship_bills b
+JOIN "Содержание счета" bc ON b.bill = bc."№ счета" 
 LEFT JOIN cash.komtet_catalog k ON k.kt_code = bc."КодСодержания"
-WHERE bc."№ счета" = arg_bill_no)
--- ORDER BY bc."ПозицияСчета")
+WHERE b.shp_id=arg_shp_id)
 , max_item AS (SELECT * FROM items ORDER BY oid DESC LIMIT 1)
 SELECT i.* FROM items i
 UNION
 (SELECT (m.oid::int4+1)::varchar, 'Доставка', q.delivery_cost, 1, m.vat, 'шт', 'service' FROM max_item m
-JOIN kt_q q ON q.bill_no = arg_bill_no AND q.delivery_cost IS NOT NULL)
+JOIN kt_q q ON q.shp_id = arg_shp_id AND q.delivery_cost IS NOT NULL)
 ORDER BY oid;
 
 $function$
