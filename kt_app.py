@@ -1,14 +1,15 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 """
     KOMTET application class
 """
 
-import sys
 import logging
 import argparse
 import configparser
+import sys
 from komtet_kassa_sdk import Client
+sys.path.append('/opt/pg_app')
 from pg_app import PGapp
 
 class KTapp(PGapp):
@@ -17,7 +18,6 @@ class KTapp(PGapp):
     """
     log_format = '[%(filename)-21s:%(lineno)4s - %(funcName)20s()] \
             %(levelname)-7s | %(asctime)-15s | %(message)s'
-    conf_file_name = "dl.conf"
 
     def __init__(self, args):
         self.args = args
@@ -44,7 +44,7 @@ class KTapp(PGapp):
 
 
 
-CONF_FILE_NAME = "komtet.cfg"
+CONF_FILE_NAME = "komtet.conf"
 parser = argparse.ArgumentParser()
 parser.add_argument('--conf', type=str, default=CONF_FILE_NAME, help='conf file')
 parser.add_argument('--pg_srv', type=str, default='localhost', help='PG hostname')
