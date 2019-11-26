@@ -25,14 +25,14 @@ def main(shop_id, secret_key):
     except HTTPError as exc:
         print(exc.response.text)
     else:
-        print(cour_list)
+        print(cour_list._asdict())
 
 
 if __name__ == '__main__':
     CFG = ConfigParser()
-    CFG.read('komtet.cfg')
+    CFG.read('komtet.conf')
     SHOP_ID = CFG['AUTH']['SHOP_ID']
     SECRET_KEY = CFG['AUTH']['SECRET_KEY']
     print(SHOP_ID)
-    # main(SHOP_ID, SECRET_KEY)
+    #main(SHOP_ID, SECRET_KEY)
     fire.Fire(Client(SHOP_ID, SECRET_KEY))
