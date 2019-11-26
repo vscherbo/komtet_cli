@@ -1,6 +1,6 @@
 -- Drop table
 
--- DROP TABLE shp.kt_q;
+-- DROP TABLE shp.kt_q cascade;
 
 CREATE TABLE shp.kt_q (
     id serial NOT NULL,
