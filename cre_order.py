@@ -5,6 +5,7 @@
 """
 
 import logging
+import sys
 from requests.exceptions import HTTPError
 from komtet_kassa_sdk import Order, Client
 import kt_app
@@ -110,10 +111,12 @@ class KTorder(kt_app.KTapp):
         try:
             logging.debug('dict(self.order)=%s', dict(self.order))
             #res = self.order
-            res = self.client.create_order(self.order)
+            res = self.client.create_order(self.order)._asdict()
         except HTTPError:
-            logging.exception('FAILED')
+            ret_str = sys.exc_info()[1]  # exc_value
+            logging.error('FAILED: %s', ret_str)
         else:
+            ret_str = ''
             logging.debug('type(res)=%s', type(res))
             logging.debug('res=%s', res)
 
@@ -136,7 +139,7 @@ class KTorder(kt_app.KTapp):
                             self.wait_pg_connect()
                         else:
                             break
-
+        return ret_str
 
     def get_order_info(self, oid):
         """ Get order info from KOMTET
@@ -161,7 +164,8 @@ def main():
 
     kt_order_app.prepare_order(args.shp_id)
 
-    kt_order_app.place_order()
+    err_str = kt_order_app.place_order()
+    print(err_str, file=sys.stderr, end='', flush=True)
 
 
 
