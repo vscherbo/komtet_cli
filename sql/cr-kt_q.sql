@@ -5,7 +5,7 @@
 CREATE TABLE shp.kt_q (
     id serial NOT NULL,
     shp_id int4 NOT NULL DEFAULT -1,
-    status varchar NOT NULL DEFAULT 'new'::character varying, -- new - новый, done - выполнен, canceled - отменен
+    state varchar NOT NULL DEFAULT 'new'::character varying, -- new - новый, done - выполнен, canceled - отменен
     cli_name varchar NULL,
     cli_address varchar NOT NULL,
     cli_phone varchar NOT NULL,
@@ -26,11 +26,11 @@ COMMENT ON TABLE shp.kt_q IS 'очередь доставок курьером �
 
 -- Column comments
 
-COMMENT ON COLUMN shp.kt_q.status IS 'new - новый, done - выполнен, canceled - отменен';
+COMMENT ON COLUMN shp.kt_q.state IS 'new - новый, done - выполнен, canceled - отменен';
 COMMENT ON COLUMN shp.kt_q.payment_type IS 'card - оплата безналичными (по умолчанию), cash - оплата наличными, prepayment - сумма предоплатой (зачет аванса и/или предыдущих платежей), credit - сумма постоплатой (кредит), counter_provisioning - сумма встречным предоставлением';
 COMMENT ON COLUMN shp.kt_q.sno IS '1 - УСН доход';
 COMMENT ON COLUMN shp.kt_q.courier_id IS 'от КОМТЕТ';
-
+COMMENT ON COLUMN shp.kt_q.stts IS '0 - создан, 10 - создан в Комтет, 20 - взят курьером, 30 - отдан курьером, 90 - завершён, деньги в кассе';
 -- Permissions
 
 ALTER TABLE shp.kt_q OWNER TO arc_energo;
