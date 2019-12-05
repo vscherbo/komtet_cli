@@ -40,7 +40,7 @@ WHERE b.shp_id=arg_shp_id)
 , max_item AS (SELECT * FROM items ORDER BY oid DESC LIMIT 1)
 SELECT i.* FROM items i
 UNION
-(SELECT (m.oid::int4+1)::varchar, 'Доставка', q.delivery_cost, 1, m.vat, 'шт', 'service' FROM max_item m
+(SELECT (m.oid::int4+1)::varchar, 'Организация доставки', q.delivery_cost, 1, m.vat, 'шт', 'service' FROM max_item m
 JOIN kt_q q ON q.shp_id = arg_shp_id AND q.delivery_cost IS NOT NULL)
 ORDER BY oid;
 
