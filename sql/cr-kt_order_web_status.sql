@@ -26,7 +26,16 @@ BEGIN
             IF kt_q_rec.state = res->>'state' THEN -- return 0, i.e. the same
                 rc := 0;
             ELSE -- update kt_q
-                UPDATE shp.kt_q SET state = res->>'state' WHERE shp_id = arg_shp_id;
+                UPDATE shp.kt_q
+                    SET state = res->>'state',
+                    -- stts = 30
+                    stts = CASE
+                             WHEN 'done' = res->>'state' THEN 30
+                             WHEN 'canceled' = res->>'state' THEN 31
+                             ELSE -1
+                           END,
+                    amount = (res->>'amount')::numeric
+                WHERE shp_id = arg_shp_id;
                 IF FOUND THEN rc := 1; END IF;
             END IF;
         END IF;
