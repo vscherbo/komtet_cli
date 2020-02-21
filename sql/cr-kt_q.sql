@@ -30,7 +30,8 @@ COMMENT ON COLUMN shp.kt_q.state IS 'new - новый, done - выполнен, 
 COMMENT ON COLUMN shp.kt_q.payment_type IS 'card - оплата безналичными (по умолчанию), cash - оплата наличными, prepayment - сумма предоплатой (зачет аванса и/или предыдущих платежей), credit - сумма постоплатой (кредит), counter_provisioning - сумма встречным предоставлением';
 COMMENT ON COLUMN shp.kt_q.sno IS '1 - УСН доход';
 COMMENT ON COLUMN shp.kt_q.courier_id IS 'от КОМТЕТ';
-COMMENT ON COLUMN shp.kt_q.stts IS '0 - создан, 10 - создан в Комтет, 20 - взят курьером, 30 - отдан курьером, 90 - завершён, деньги в кассе';
+COMMENT ON COLUMN shp.kt_q.stts IS '0 - создан, 10 - создан в Комтет, 20 - взят курьером, 30 - отдан курьером, 31 - отменён, 90 - завершён, деньги в кассе';
+
 -- Permissions
 
 ALTER TABLE shp.kt_q OWNER TO arc_energo;
