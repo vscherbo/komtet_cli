@@ -11,7 +11,6 @@ DECLARE cmd character varying;
   wrk_dir text := '/opt/komtet-cash';
 BEGIN
     IF arg_operation = 'CREATE' THEN
-        -- cmd := format('python3 %s/cre_order.py --pg_srv=localhost --log_file=%s/dl_add_ca_person.log --conf=%s --shp_id=%s', 
         cmd := format('python3 %s/cre_order.py --log_level=DEBUG --log_file=%s/cre_order.log --conf=%s --shp_id=%s', 
             wrk_dir, -- script dir
             wrk_dir, -- logfile dir
