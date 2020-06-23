@@ -17,7 +17,7 @@ CREATE TABLE shp.kt_q (
     courier_id int4 NOT NULL DEFAULT 386, -- от КОМТЕТ
     prepayment numeric NULL,
     description varchar NULL,
-    delivery_cost numeric NULL DEFAULT 500,
+    delivery_cost numeric NULL,
     id_komtet int4 NULL,
     stts int4 NOT NULL DEFAULT 0,
     CONSTRAINT kt_q_pk PRIMARY KEY (id)
